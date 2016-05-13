@@ -20,6 +20,10 @@ describe('Game service', () => {
             .then(gamesRemoved => Promise.all(gamesRemoved))
             .then(() => done(), done);
     });
+    
+    afterEach(() => {
+        service.events.removeAllListeners();
+    });
 
     describe('list of available games', () => { 
         it('should include games set by other users', done => {
@@ -43,6 +47,28 @@ describe('Game service', () => {
                     expect(game.setBy).to.not.equal(secondUserId);
                 })
                 .then(done, done);
+        });
+    });
+    
+    describe('events', () => {
+        it('should raise an event when adding a game', done => {
+            service.create(firstUserId, 'testing');
+            service.events.on('gameSaved', game => {
+                expect(game.setBy).to.equal(firstUserId);
+                expect(game.word).to.equal('TESTING');
+                done();
+            });
+        });
+        
+        it('should raise an event when removing a game', done => {
+            service.create(firstUserId, 'testing');
+            service.events.on('gameSaved', game => {
+                game.remove();
+                service.events.on('gameRemoved', gameRemoved => {
+                    expect(gameRemoved).to.equal(game);
+                    done();
+                });
+            });
         });
     });
 });

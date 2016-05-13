@@ -1,7 +1,9 @@
 'use strict';
 
-module.exports = (mongoose) => {
+const EventEmitter = require('events');
+const emitter = new EventEmitter();
 
+module.exports = (mongoose) => {
     let Game = mongoose.models['Game'];
 
     if (!Game) {
@@ -25,6 +27,11 @@ module.exports = (mongoose) => {
             return this.word === word.toUpperCase();
         };
 
+        gameSchema.post('save', game =>
+            emitter.emit('gameSaved', game));
+        gameSchema.post('remove', game =>
+            emitter.emit('gameRemoved', game));
+
         Game = mongoose.model('Game', gameSchema);
     }
 
@@ -36,6 +43,9 @@ module.exports = (mongoose) => {
         },
         createdBy: userId => Game.find({setBy: userId}),
         availableTo: userId => Game.where('setBy').ne(userId),
-        get: id => Game.findById(id)
+        get: id => Game.findById(id),
+        events: emitter
     };
 };
+
+module.exports.events = emitter;
