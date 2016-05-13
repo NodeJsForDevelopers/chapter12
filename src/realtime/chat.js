@@ -1,7 +1,9 @@
 'use strict';
 
 module.exports = io => {
-    io.on('connection', (socket) => {
+    const namespace = io.of('/chat');
+    
+    namespace.on('connection', (socket) => {
         const username = socket.request.user.name;
 
         if(username) {
@@ -19,7 +21,7 @@ module.exports = io => {
                     type: 'warning'
                 });
             } else {
-                io.emit('chatMessage', {
+                namespace.emit('chatMessage', {
                     username: username,
                     message: message
                 });

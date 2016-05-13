@@ -12,7 +12,7 @@ describe('chat', function() {
                 done(err);
             } else {
                 const addr = server.address();
-                url = 'http://localhost:' + addr.port; 
+                url = 'http://localhost:' + addr.port + '/chat';
 
                 io = require('socket.io')(server);
                 io.use((socket, next) => {

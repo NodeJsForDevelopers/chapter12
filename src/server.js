@@ -15,6 +15,8 @@ module.exports = require('./config/mongoose').then(mongoose => {
     io.use(adapt(require('./middleware/users')(usersService)));
     
     require('./realtime/chat')(io);
+    const gamesService = require('./services/games.js')(mongoose);
+    require('./realtime/games')(io, gamesService);
     
     server.on('close', () => { 
         require('../src/config/redis.js').quit();

@@ -18,4 +18,14 @@ $(function() {
         });
         event.preventDefault();
     });
+    
+    var socket = io('/games');
+    var availableGames = $('#availableGames');
+    
+    socket.on('gameSaved', function(game) {
+        availableGames.append('<li id="' + game + '"><a href="/games/' + game + '">' + game + '</a></li>');
+    });
+    socket.on('gameRemoved', function(game) {
+        $('#' + game).remove();
+    });
 });
