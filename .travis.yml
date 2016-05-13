@@ -1,15 +1,21 @@
 language: node_js
 before_script:
-  - npm install -g gulp
+- npm install -g gulp
 script: gulp default integration-test
 node_js:
- - 6
- - 4
+- 6
+- 4
 services:
- - mongodb
- - redis-server
+- mongodb
+- redis-server
+deploy:
+  provider: heroku
+  app: peaceful-meadow-35764
+  on:
+    node: 6
+  api_key:
+    secure: jrjl8h3b/dVDm52pbjzf4NCcXNkJNjNI0m5cKJh9VAlZYeEXnqHZLOB67ePLr5Yr0qHLKKyCCrzpmF7zfC6O+HJKO6xSSzSNfzUedr9aC0NxMgNt83Ycy3L7KYI/pGbdSuc+SoKxGKrXLx8PWMa7Rrn40owj3NgIFDO/51jAOnmnSXrS3vt+kObKVyO+S/AFqdGRgBLhQ0FrYvDnESRfxQ96L08A1o9s5oCU0vro7S9D1ofOKZ3orOKGNGWfy/D4Qta5rYfBnoyY4cWovde+927Yk7mppVTflABqrki7WJpYx8I8gNK4AESGbFSO+WtBktEszArQIMpVv2R+f1lAXYq0ubwXpOQvjBKjLx4/gftmkWp069vv5dDLWCAcjDhLKr3PG9mdiK4zlek7snFvPAapZhuPoTzgM6BcUtSYU/zgAi347lTt7/kOXzGXdyWdDhuixY8LhWRkQniighGb/qW/zK3rl9CjjWvns2qnRyIJfaJlQmPHC20S2h6jBld3JMQixFc2CuPxGrHDS47ZTgXzE7qOy0UzyEci4pQbXyLaE0oD8mkvvPPlEvc3HIdtQ8IkLtCfnCJc+/90w4cm0nmkoMo+c3L4q2oTOCa5Rj+shRWDEgyR0379KXRcWruUUq1z8YZN4Hq7jViaVsXwODvAs104CtAuC8VGH2avwX4=
 env:
   global:
-    - MONGODB_URL=mongodb://localhost/hangman
-    - REDIS_URL=redis://127.0.0.1:6379/
-
+  - MONGODB_URL=mongodb://localhost/hangman
+  - REDIS_URL=redis://127.0.0.1:6379/

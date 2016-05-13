@@ -14,7 +14,7 @@ module.exports = (gamesService, usersService) => {
         ])
             .then(results => {
                 res.render('index', {
-                            title: 'Hangman',
+                            title: 'Hangman online',
                             userId: req.user.id,
                             createdGames: results[0],
                             availableGames: results[1],
