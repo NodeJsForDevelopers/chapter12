@@ -10,7 +10,7 @@ $(document).ready(function() {
 
     socket.on('chatMessage', function(data){
         $('#messages').append(
-            $('<p>').text(data.message)
+            $('<p>').text(data.message).addClass(data.type)
                 .prepend($('<b>').text(data.username)));
     });
 });
