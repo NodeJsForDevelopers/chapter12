@@ -7,9 +7,9 @@ module.exports = (mongoose) => {
     var cookieParser = require('cookie-parser');
     var bodyParser = require('body-parser');
 
-    var users = require('./middleware/users');
     let gamesService = require('./services/games')(mongoose);
     let usersService = require('./services/users');
+    let users = require('./middleware/users')(usersService);
     let routes = require('./routes/index')(gamesService, usersService);
     let games = require('./routes/games')(gamesService, usersService);
     let profile = require('./routes/profile')(usersService);

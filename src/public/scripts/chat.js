@@ -8,7 +8,9 @@ $(document).ready(function() {
         event.preventDefault();
     });
 
-    socket.on('chatMessage', function(message){
-        $('#messages').append($('<p>').text(message));
+    socket.on('chatMessage', function(data){
+        $('#messages').append(
+            $('<p>').text(data.message)
+                .prepend($('<b>').text(data.username)));
     });
 });

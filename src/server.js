@@ -10,6 +10,10 @@ module.exports = require('./config/mongoose').then(mongoose => {
         io.adapter(redisAdapter(process.env.REDIS_URL));
     }
     
+    io.use(adapt(require('cookie-parser')()));
+    const usersService = require('./services/users.js');
+    io.use(adapt(require('./middleware/users')(usersService)));
+    
     require('./realtime/chat')(io);
     
     server.on('close', () => { 
@@ -18,3 +22,9 @@ module.exports = require('./config/mongoose').then(mongoose => {
     });
     return server;
 });
+
+function adapt(expressMiddleware) {
+    return (socket, next) => {
+        expressMiddleware(socket.request, socket.request.res, next);
+    };
+}
