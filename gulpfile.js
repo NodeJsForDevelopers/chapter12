@@ -21,7 +21,8 @@ gulp.task('lint-server', function() {
         
 gulp.task('lint-client', function() {
     return gulp.src('src/public/**/*.js')
-        .pipe(eslint({ envs: [ 'browser', 'jquery' ] }))
+        .pipe(eslint({ envs: [ 'browser', 'jquery' ],
+                       globals: { io: false } }))
         .pipe(eslint.format())
         .pipe(eslint.failAfterError());
 });
@@ -67,21 +68,15 @@ gulp.task('test', ['lint-test', 'instrument'], function() {
 gulp.task('integration-test', ['lint-integration-test', 'test'], (done) => {
     const TEST_PORT = 5000;
   
-    require('./src/config/mongoose.js').then((mongoose) => {
-        let server, teardown = (error) => {
-            require('./src/config/redis.js').quit();
-            server.close(() =>
-                mongoose.disconnect(() => done(error)));
-        };
-        server = require('http')
-            .createServer(require('./src/app.js')(mongoose))
-            .listen(TEST_PORT, function() {
-                gulp.src('integration-test/**/*.js')
-                    .pipe(shell('node node_modules/phantomjs-prebuilt/bin/phantomjs <%=file.path%>', {
-                        env: { 'TEST_PORT': TEST_PORT }
-                    }))
-                    .on('error', teardown)
-                    .on('end', teardown)
+    require('./src/server.js').then((server) => {
+        server.listen(TEST_PORT);
+        server.on('listening', () => {
+            gulp.src('integration-test/**/*.js')
+                .pipe(shell('node node_modules/phantomjs-prebuilt/bin/phantomjs <%=file.path%>', {
+                    env: { 'TEST_PORT': TEST_PORT }
+                }))
+                .on('error', error => server.close(() => done(error)))
+                .on('end', () => server.close(done))
         });
   });
 });

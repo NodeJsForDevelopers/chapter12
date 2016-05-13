@@ -5,6 +5,8 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script src="/scripts/index.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/chat.js"></script>
   </head>
   <body>
     <h1>{{ title }}</h1>
@@ -41,5 +43,11 @@
       <li>{{name}} with {{wins}} wins</li>
     {{/topPlayers}}
     </ol>
+    <hr/>
+    <h3>Lobby</h3>
+    <form class="chat">
+      <div id="messages"></div>
+      <input id="message"/><input type="submit" value="Send"/>
+    </form>
   </body>
 </html>
