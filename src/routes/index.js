@@ -30,5 +30,10 @@ module.exports = (gamesService, usersService) => {
             .catch(next);
     });
 
+    router.post('/logout', function(req, res){
+        req.logout();
+        res.redirect('/');
+    });
+
     return router;
 };
