@@ -10,9 +10,10 @@ module.exports = require('./config/mongoose').then(mongoose => {
         io.adapter(redisAdapter(process.env.REDIS_URL));
     }
     
-    io.use(adapt(require('./middleware/sessions')));
     const usersService = require('./services/users.js');
-    io.use(adapt(require('./middleware/users')(usersService)));
+    let passport = require('./config/passport')(usersService);
+    require('./middleware/sessions')(passport).forEach(
+        middleware => io.use(adapt(middleware)));
     
     require('./realtime/chat')(io);
     const gamesService = require('./services/games.js')(mongoose);

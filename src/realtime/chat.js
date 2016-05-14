@@ -4,7 +4,10 @@ module.exports = io => {
     const namespace = io.of('/chat');
     
     namespace.on('connection', (socket) => {
-        const username = socket.request.user.name;
+        let username = null;
+        if (socket.request.user) {
+            username = socket.request.user.name;
+        }
         
         socket.on('joinRoom', (room) => {
             socket.join(room);

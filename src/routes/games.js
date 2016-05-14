@@ -43,7 +43,7 @@ module.exports = (gamesService, usersService) => {
             req.params.id,
             res,
             game => {
-                if (game.matches(req.body.word)) {
+                if (req.user && game.matches(req.body.word)) {
                     usersService.recordWin(req.user.id);
                 }
                 res.send({

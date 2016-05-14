@@ -29,27 +29,31 @@
     });
     
     function withGame(word, callback) {
-        page.open(rootUrl + '/', function() {
-            page.evaluateAsync(function(w) {
-                $('input[name=word]').val(w);
-                $('form#createGame').submit();
-            }, 0, word);
-                
-            page.evaluate(function() {
-                $(document).ajaxComplete(window.callPhantom);
-            });
-            
-            page.onCallback = function() {
-                var gamePath = page.evaluate(function() {
-                    return $('#createdGames .game a').first().attr('href');
+        page.open(rootUrl + '/auth/test',
+            'POST',
+            'username=TestUser&password=dummy',
+            function() {
+                page.evaluateAsync(function(w) {
+                    $('input[name=word]').val(w);
+                    $('form#createGame').submit();
+                }, 0, word);
+                    
+                page.evaluate(function() {
+                    $(document).ajaxComplete(window.callPhantom);
                 });
                 
-                page.onCallback = undefined;
-                page.clearCookies();
-                
-                page.open(rootUrl + gamePath, verify(callback));
-            };
-        });
+                page.onCallback = function() {
+                    var gamePath = page.evaluate(function() {
+                        return $('#createdGames .game a').first().attr('href');
+                    });
+                    
+                    page.onCallback = undefined;
+                    page.clearCookies();
+                    
+                    page.open(rootUrl + gamePath, verify(callback));
+                };
+            }
+        );
     }
     
     function getText(selector) {

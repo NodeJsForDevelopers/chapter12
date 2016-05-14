@@ -8,7 +8,8 @@ module.exports = (io, service) => {
 
     function forwardEvent(name, socket) {
         service.events.on(name, game => {
-            if (game.setBy !== socket.request.user.id) {
+            if (!socket.request.user ||
+                    game.setBy !== socket.request.user.id) {
                 socket.emit(name, game.id);
             }
         });
