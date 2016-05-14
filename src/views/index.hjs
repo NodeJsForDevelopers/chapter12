@@ -18,6 +18,9 @@
       <form action="/auth/twitter" method="POST">
         <input type="submit" value="Log in using Twitter" />
       </form>
+      <form action="/auth/facebook" method="POST">
+        <input type="submit" value="Log in using Facebook" />
+      </form>
     {{/loggedIn}}
     {{#loggedIn}}
       <form action="/logout" method="POST">

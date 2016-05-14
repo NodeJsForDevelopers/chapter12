@@ -29,10 +29,14 @@ module.exports = (mongoose) => {
     app.use(sessions);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.post('/auth/twitter', passport.authenticate('twitter'));
-    app.get('/auth/twitter/callback',
-        passport.authenticate('twitter',
-            { successRedirect: '/', failureRedirect: '/' }));
+    const addAuthEndpoints = provider => {
+        app.post(`/auth/${provider}`, passport.authenticate(provider));
+        app.get(`/auth/${provider}/callback`,
+            passport.authenticate(provider, { successRedirect: '/',
+                failureRedirect: '/', session: true }));
+    };
+    addAuthEndpoints('twitter');
+    addAuthEndpoints('facebook');
     
     if (process.env.NODE_ENV === 'test') {
         app.post('/auth/test',
