@@ -4,9 +4,9 @@ module.exports = (mongoose) => {
     var express = require('express');
     var path = require('path');
     var logger = require('morgan');
-    var cookieParser = require('cookie-parser');
     var bodyParser = require('body-parser');
-
+    
+    let sessions = require('./middleware/sessions');
     let gamesService = require('./services/games')(mongoose);
     let usersService = require('./services/users');
     let users = require('./middleware/users')(usersService);
@@ -26,7 +26,7 @@ module.exports = (mongoose) => {
     }
     app.use(bodyParser.json());
     app.use(bodyParser.urlencoded({ extended: false }));
-    app.use(cookieParser());
+    app.use(sessions);
     app.use(express.static(path.join(__dirname, 'public')));
 
     app.use(users);

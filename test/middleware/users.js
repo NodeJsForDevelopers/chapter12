@@ -9,7 +9,7 @@ describe('Users middleware', function() {
     let request, usersService, middleware;
     
     beforeEach(function() {
-        request = { cookies: { userId: defaultUserId} };
+        request = { session: { userId: defaultUserId} };
         usersService = { getUsername: sinon.stub() };
         middleware = factory(usersService);
     });
@@ -37,16 +37,15 @@ describe('Users middleware', function() {
     
     it('if the user is not already signed in, creates a new user id and stores it in a cookie', done => {
         // Given
-        request.cookies.userId = undefined;
-        const response = { cookie: sinon.spy() };
+        request.session.userId = undefined;
         
         // When
-        middleware(request, response, () => {
+        middleware(request, {}, () => {
             // Then
             expect(request.user).to.exist;
             const newUserId = request.user.id;
             expect(newUserId).to.exist;
-            expect(response.cookie.calledWith('userId', newUserId)).ok;
+            expect(request.session.userId).to.equal(newUserId);
             done();
         });
     });

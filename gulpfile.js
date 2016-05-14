@@ -67,7 +67,8 @@ gulp.task('test', ['lint-test', 'instrument'], function() {
 
 gulp.task('integration-test', ['lint-integration-test', 'test'], (done) => {
     const TEST_PORT = 5000;
-  
+    process.env.SESSION_SECRET = process.env.SESSION_SECRET || 'testOnly';
+
     require('./src/server.js').then((server) => {
         server.listen(TEST_PORT);
         server.on('listening', () => {

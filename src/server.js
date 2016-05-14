@@ -10,7 +10,7 @@ module.exports = require('./config/mongoose').then(mongoose => {
         io.adapter(redisAdapter(process.env.REDIS_URL));
     }
     
-    io.use(adapt(require('cookie-parser')()));
+    io.use(adapt(require('./middleware/sessions')));
     const usersService = require('./services/users.js');
     io.use(adapt(require('./middleware/users')(usersService)));
     
