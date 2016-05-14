@@ -5,6 +5,8 @@
     <link rel="stylesheet" href="/stylesheets/style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.2.3/jquery.min.js"></script>
     <script src="/scripts/game.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/scripts/chat.js"></script>
     <base href="/games/{{ id }}/">
   </head>
   <body>
@@ -13,5 +15,12 @@
     <p>Press letter keys to guess</p>
     <h3>Missed letters:</h3>
     <p id="missedLetters"></p>
+    
+    <hr/>
+    <h3>Discussion</h3>
+    <form class="chat" data-room="{{id}}">
+      <div id="messages"></div>
+      <input id="message"/><input type="submit" value="Send"/>
+    </form>
   </body>
 </html>

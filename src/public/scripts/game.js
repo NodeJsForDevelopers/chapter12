@@ -26,7 +26,8 @@ $(function() {
     
     $(document).keydown(function(event) {
         // Letter keys have key codes in the range 65-90
-        if (event.which >= 65 && event.which <= 90 ) {
+        if (!$('.chat #message').is(':focus') &&
+                event.which >= 65 && event.which <= 90 ) {
             var letter = String.fromCharCode(event.which);
             if (guessedLetters.indexOf(letter) === -1) {
                 guessedLetters.push(letter);

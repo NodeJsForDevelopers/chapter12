@@ -58,8 +58,8 @@ gulp.task('test', ['lint-test', 'instrument'], function() {
     .pipe(istanbul.enforceThresholds({
       thresholds: {
         global: {
-          statements: 75,
-          branches: 50
+          statements: 80,
+          branches: 60
         }
       }
     }));
