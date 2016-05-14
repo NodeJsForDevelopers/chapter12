@@ -23,6 +23,33 @@ describe('User service', function() {
         });
     });
     
+    describe('getOrCreate', () => {
+        let provider = 'twitter', providerId, providerUsername = 'twitteruser';
+        
+        beforeEach(() => {
+            providerId = new Date().getTime();
+        });
+        
+        it('creates a new user for the external account if one does not exist', done => {
+            service.getOrCreate(provider, providerId, providerUsername)
+                .then(createdUser => {
+                    expect(createdUser.id).to.exist;
+                    expect(createdUser.name).to.equal(providerUsername);
+                })
+                .then(() => done(), done);
+        });
+        
+        it('returns a user already associated with the external account', done => {
+            service.getOrCreate(provider, providerId, providerUsername)
+                .then(createdUser => 
+                    service.getOrCreate(provider, providerId, 'renamedtwitteruser')
+                        .then(retrievedUser => {
+                            expect(retrievedUser).to.eql(createdUser);
+                        }))
+                .then(() => done(), done);
+        });
+    });
+    
     describe('rankings', function() {
         let users = [
             { userId: 'user1', name: 'One' },

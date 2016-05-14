@@ -10,16 +10,25 @@
   </head>
   <body>
     <h1>{{ title }}</h1>
-    <h2>Profile</h2>
+    <h2>Account</h2>
     {{#ranking}}
       <p>You are ranked #{{ranking.rank}} with {{ranking.wins}} wins!</p>
     {{/ranking}}
-    <form action="/profile" method="POST">
-      <label for="username">Username:</label>
-      <input type="text" name="name" id="name" value="{{username}}" />
-      <input type="submit" />
-    </form>
+    {{^loggedIn}}
+      <form action="/auth/twitter" method="POST">
+        <input type="submit" value="Log in using Twitter" />
+      </form>
+    {{/loggedIn}}
+    {{#loggedIn}}
+      <h3>Profile</h3>
+      <form action="/profile" method="POST">
+        <label for="username">Username:</label>
+        <input type="text" name="name" id="name" value="{{username}}" />
+        <input type="submit" />
+      </form>
+    {{/loggedIn}}
     <h2>Games</h2> 
+    {{#loggedIn}}
     <form action="/games" method="POST" id="createGame">
       <input type="text" name="word" id="word"
              placeholder="Enter a word to guess..." />
@@ -31,6 +40,7 @@
         {{> createdGame}}
       {{/createdGames}}
     </ul>
+    {{/loggedIn}}
     <h3>Games available to play</h3>
     <ul id="availableGames">
       {{#availableGames}}
@@ -47,7 +57,9 @@
     <h3>Lobby</h3>
     <form class="chat" data-room="lobby">
       <div id="messages"></div>
-      <input id="message"/><input type="submit" value="Send"/>
+      {{#loggedIn}}
+        <input id="message"/><input type="submit" value="Send"/>
+      {{/loggedIn}}
     </form>
   </body>
 </html>

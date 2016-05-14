@@ -6,13 +6,13 @@ module.exports = (mongoose) => {
     var logger = require('morgan');
     var bodyParser = require('body-parser');
     
-    let sessions = require('./middleware/sessions');
     let gamesService = require('./services/games')(mongoose);
     let usersService = require('./services/users');
-    let users = require('./middleware/users')(usersService);
     let routes = require('./routes/index')(gamesService, usersService);
     let games = require('./routes/games')(gamesService, usersService);
     let profile = require('./routes/profile')(usersService);
+    let passport = require('./config/passport')(usersService);
+    let sessions = require('./middleware/sessions')(passport);
 
     var app = express();
 
@@ -29,7 +29,16 @@ module.exports = (mongoose) => {
     app.use(sessions);
     app.use(express.static(path.join(__dirname, 'public')));
 
-    app.use(users);
+    app.post('/auth/twitter', passport.authenticate('twitter'));
+    app.get('/auth/twitter/callback',
+        passport.authenticate('twitter',
+            { successRedirect: '/', failureRedirect: '/' }));
+    
+    if (process.env.NODE_ENV === 'test') {
+        app.post('/auth/test',
+            passport.authenticate('local', { successRedirect: '/' }));
+    }
+    
     app.use('/', routes);
     app.use('/games', games);
     app.use('/profile', profile);

@@ -5,17 +5,20 @@ module.exports = (gamesService, usersService) => {
     var router = express.Router();
 
     router.get('/', function(req, res, next) {
-        Promise.all([
-            gamesService.createdBy(req.user.id),
-            gamesService.availableTo(req.user.id),
-            usersService.getUsername(req.user.id),
-            usersService.getRanking(req.user.id),
-            usersService.getTopPlayers()
-        ])
+        let userId = null;
+        if (req.user) {
+            userId = req.user.id;
+        }
+        
+        Promise.all([gamesService.createdBy(userId),
+                    gamesService.availableTo(userId),
+                    usersService.getUsername(userId),
+                    usersService.getRanking(userId),
+                    usersService.getTopPlayers()])
             .then(results => {
                 res.render('index', {
                             title: 'Hangman online',
-                            userId: req.user.id,
+                            loggedIn: req.isAuthenticated(),
                             createdGames: results[0],
                             availableGames: results[1],
                             username: results[2],

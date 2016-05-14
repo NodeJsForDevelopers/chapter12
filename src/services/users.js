@@ -1,12 +1,37 @@
 'use strict';
 
-let redisClient = require('../config/redis.js');
+const redisClient = require('../config/redis.js');
+const uuid = require('uuid');
+
+const getUser = userId =>
+    redisClient.getAsync(`user:${userId}:name`)
+        .then(userName => ({
+            id: userId,
+            name: userName
+        }));
+
+const setUsername = (userId, name) =>
+    redisClient.setAsync(`user:${userId}:name`, name);
 
 module.exports = {
+    getOrCreate: (provider, providerId, providerUsername) => {
+        let providerKey = `provider:${provider}:${providerId}:user`;
+        let newUserId = uuid.v4();
+        return redisClient.setnxAsync(providerKey, newUserId)
+            .then(created => {
+                if (created) {
+                    return setUsername(newUserId, providerUsername)
+                        .then(() => getUser(newUserId));
+                } else {
+                    return redisClient
+                        .getAsync(providerKey).then(getUser);
+                }
+            });
+    },
+    getUser: getUser,
     getUsername: userId =>
         redisClient.getAsync(`user:${userId}:name`),
-    setUsername: (userId, name) =>
-        redisClient.setAsync(`user:${userId}:name`, name),
+    setUsername: setUsername,
     recordWin: userId =>
         redisClient.zincrbyAsync('user:wins', 1, userId),
     getTopPlayers: () =>
