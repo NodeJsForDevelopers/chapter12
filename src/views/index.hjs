@@ -20,6 +20,9 @@
       </form>
     {{/loggedIn}}
     {{#loggedIn}}
+      <form action="/logout" method="POST">
+        <input type="submit" value="Log out" />
+      </form>
       <h3>Profile</h3>
       <form action="/profile" method="POST">
         <label for="username">Username:</label>
